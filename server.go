@@ -9,6 +9,7 @@ import (
 	pb "simplegrpcserver/proto/gen"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 type server struct {
@@ -23,12 +24,24 @@ func (s *server)Add(ctx context.Context, req *pb.AddRequest)(*pb.AddResponse, er
 
 func main() {
 
-	lis, err := net.Listen("tcp", ":50051")
+	// IMPORT CERTIFICATES. WIll have to create them first.
+
+	cert:= "cert.pem"
+	key:= "key.pem"
+
+	creds, err := credentials.NewServerTLSFromFile(cert, key)
+	if err!= nil {
+		log.Fatalln("Failed to load credentials", err)
+	}
+
+	port := ":50051"
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatal("Failed to listen: ", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	// ADD CREDENTIALS HERE
+	grpcServer := grpc.NewServer(grpc.Creds(creds))
 
 	pb.RegisterCalculateServer(grpcServer, &server{})
 

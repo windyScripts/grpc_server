@@ -6,8 +6,4 @@ go get google.golang.org/grpc
 
 For generating from openssl.cnf file:
 
-openssl req -x509 -newkey rsa:2048 -nodes \
-  -keyout key.pem \
-  -out cert.pem \
-  -days 365 \
-  -config openssl.cnf
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout key.pem -out cert.pem -config cert.conf
